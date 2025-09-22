@@ -1,68 +1,192 @@
-# ArtScape - A2_Soham_Gundewar - Microservices Demo (Auth, Artwork, Orders)
+# 🎨 ArtScape Microservices Platform
 
-This repository provides a minimal, runnable microservices demo for CSC491/591 A2:
-- Auth service (8001)
-- Artwork service (8002)
-- Orders service (8003)
+A lightweight **digital art marketplace** built with **microservices architecture**.
+This demo showcases secure authentication, role-based authorization, and inter-service communication using **FastAPI + SQLite + Docker Compose**.
 
-Each service is a FastAPI app with its own SQLite DB. Services run in Docker Compose.
+---
 
-## Requirements
-- Docker & Docker Compose installed (desktop or engine)
-- Optionally, Python for local development (not required to run via docker)
+## 🏗️ Architecture Overview
 
-## JWT enforcement notes
-- Auth issues HS256 tokens using SECRET_KEY.
-- Artwork and Orders both decode tokens locally and enforce basic role rules.
-- Orders forwards the user's token to Artwork when reserving an artwork.
+* **🔐 Auth Service** (Port 8001)
+  User registration, login, and JWT token management
 
-## Seeding
-Run:
+* **🖼️ Artwork Service** (Port 8002)
+  Artwork creation, listing, and ownership management
+
+* **🛒 Orders Service** (Port 8003)
+  Order placement and retrieval with role-based visibility
+
+* **🌐 (Optional) API Gateway**
+  Can be extended for centralized routing
+
+Each service has its **own database**, following the **database-per-service** pattern.
+
+---
+
+## 🚀 Quick Start
+
+### Option 1: Docker (Recommended)
+
+```bash
+# Build and run all services
 docker compose up --build -d
-docker compose run --rm auth python app/seed.py
-docker compose run --rm artwork python app/seed.py
 
-## Quick start (Docker)
-1. Copy `.env.example` to `.env` and edit if needed.
-2. From repo root: docker compose up --build
-3. Services:
-- Auth UI /docs: http://localhost:8001/docs
-- Artwork /docs: http://localhost:8002/docs
-- Orders /docs: http://localhost:8003/docs
+# Seed demo data (users + artworks)
+docker compose run --rm auth python -m app.seed
+docker compose run --rm artwork python -m app.seed
+```
 
-## Demo steps (TA-friendly)
-1. Register a user (artist):
-curl -X POST "http://localhost:8001/auth/register
-" -H "Content-Type: application/json" -d '{"username":"artist1","password":"pass","role":"artist"}'
+➡ Swagger UIs:
 
-2. Get token:
-curl -X POST "http://localhost:8001/auth/token
-" -F "username=artist1" -F "password=pass"
+* Auth → [http://localhost:8001/docs](http://localhost:8001/docs)
+* Artwork → [http://localhost:8002/docs](http://localhost:8002/docs)
+* Orders → [http://localhost:8003/docs](http://localhost:8003/docs)
 
-Save `access_token`.
+---
 
-3. Create artwork (use header X-Username for this demo):
+### Option 2: Local Development
 
-curl -X POST "http://localhost:8002/artworks" -H "Content-Type: application/json" -H "X-Username: artist1" -d '{"title":"Sunset","description":"Nice","price":100.0}'
+```bash
+# Setup environment
+python -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
 
+# Install dependencies
+pip install -r requirements.txt
 
-4. List artworks:
-curl http://localhost:8002/artworks
+# Run each service separately
+cd service-auth && uvicorn main:app --port 8001 --reload
+cd service-artwork && uvicorn main:app --port 8002 --reload
+cd service-orders && uvicorn main:app --port 8003 --reload
+```
 
-5. Create order (buyer = some username):
-curl -X POST "http://localhost:8003/orders
-" -H "Content-Type: application/json" -d '{"art_id":1,"buyer":"user1"}'
+---
 
+## 📋 API Documentation
 
-6. Check artwork status (is_sold should be true), and check orders.
+* **Auth Service** → [http://localhost:8001/docs](http://localhost:8001/docs)
+* **Artwork Service** → [http://localhost:8002/docs](http://localhost:8002/docs)
+* **Orders Service** → [http://localhost:8003/docs](http://localhost:8003/docs)
+
+Each service has its own OpenAPI/Swagger documentation.
+
+---
+
+## 🧪 Demo Workflow
+
+### 1. Register a User (Artist)
+
+```bash
+curl -X POST "http://localhost:8001/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"artist1","password":"pass","role":"artist"}'
+```
+
+### 2. Login & Get Token
+
+```bash
+curl -X POST "http://localhost:8001/auth/token" \
+  -F "username=artist1" -F "password=pass"
+```
+
+➡ Copy the `access_token`.
+
+### 3. Create Artwork
+
+```bash
+curl -X POST "http://localhost:8002/artworks" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Sunset","description":"Beautiful","price":100.0}'
+```
+
+### 4. Place Order (as a User)
+
+```bash
+curl -X POST "http://localhost:8003/orders" \
+  -H "Authorization: Bearer USER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"art_id":1}'
+```
+
+### 5. Verify Results
+
+```bash
+# Artwork should now show as sold
 curl http://localhost:8002/artworks/1
+
+# Orders visible for the user
 curl http://localhost:8003/orders
+```
+
+---
+
+## 📊 Database Schema
+
+* **auth.db** → Users, credentials, roles
+* **artwork.db** → Artworks, ownership, sold flag
+* **orders.db** → Orders, buyer references, status
+
+---
+
+## 🔒 Security Features
+
+* JWT-based authentication (`HS256`)
+* Role-based access control (`user`, `artist`, `admin`)
+* Token forwarding between services
+* CORS enabled for UI integration
+
+---
+
+## 🎯 Assignment A2 Compliance
+
+✅ **Three+ Microservices** implemented
+✅ **Inter-service Communication** via HTTP APIs
+✅ **Role-based Access Control** (artist, user, admin)
+✅ **Swagger UI** for each service (TA demo-ready)
+✅ **Dockerized** for simple startup and reproducibility
+
+---
+
+## 📈 Scalability & Extensions
+
+* Stateless services → scalable horizontally
+* Database-per-service → clear ownership boundaries
+* Extendable with API Gateway & load balancing
+* Could integrate **auctions, bidding, payments** in future iterations
+
+---
+
+✨ ArtScape demonstrates a **clean microservices pattern** with minimal setup, while being extensible enough to evolve into a production-ready marketplace.
+
+---
+
+flowchart LR
+    Client[👩‍💻 Client/UI] -->|Login / Register| Auth[🔐 Auth Service]
+    Client -->|Browse / Buy| Artwork[🖼️ Artwork Service]
+    Client -->|Place Order| Orders[🛒 Orders Service]
+
+    Orders -->|Verify Artwork| Artwork
+    Orders -->|Decode & Verify Token| Auth
 
 
-## Notes and caveats
-- For the sake of a simple demo, some endpoints use a header `X-Username` rather than full JWT parsing. You can extend the services to decode JWTs using `SECRET_KEY`. All services accept the same SECRET_KEY in `.env` so token decoding across services is possible.
-- This demo does not implement distributed transactions or saga patterns. It does perform the basic flow: Orders -> Artwork (reserve) -> Orders (create).
-- For grading: show the running services, token creation, an end-to-end buy flow, and the OpenAPI docs auto-generated at `/docs`.
+flowchart TB
+    subgraph AuthService[🔐 Auth Service]
+        AuthDB[(auth.db)]
+    end
 
-If you want me to enforce JWT verification in Artwork and Orders (recommended), I will add middleware that decodes the JWT using the `SECRET_KEY` env var and checks role/ownership. Otherwise, this is a complete, working base that meets A2 requirements.
+    subgraph ArtworkService[🖼️ Artwork Service]
+        ArtworkDB[(artwork.db)]
+    end
+
+    subgraph OrdersService[🛒 Orders Service]
+        OrdersDB[(orders.db)]
+    end
+
+    Client[👩‍💻 Client/UI] --> AuthService
+    Client --> ArtworkService
+    Client --> OrdersService
+
+    OrdersService --> ArtworkService
+    OrdersService --> AuthService
 
