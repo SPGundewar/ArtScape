@@ -1,9 +1,9 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from . import models
-from .database import engine
-from .routes import router
+import models
+from database import engine
+from routes import router
 from dotenv import load_dotenv
 
 load_dotenv()

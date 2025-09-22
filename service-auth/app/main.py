@@ -3,8 +3,8 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from . import models, schemas, database, auth, utils
-from .database import SessionLocal, engine
+import models, schemas, database, auth, utils
+from database import SessionLocal, engine
 from dotenv import load_dotenv
 
 load_dotenv()

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
-from .database import Base
+from database import Base
 
 class Artwork(Base):
     __tablename__ = "artworks"

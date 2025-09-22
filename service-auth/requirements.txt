@@ -3,6 +3,7 @@ uvicorn[standard]
 sqlalchemy
 pydantic
 passlib[bcrypt]
+bcrypt==3.2.2
 pyjwt
 python-dotenv
 python-multipart

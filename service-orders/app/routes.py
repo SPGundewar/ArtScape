@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from . import models, schemas, database, auth_utils
-from .database import SessionLocal
+import models, schemas, database, auth_utils
+from database import SessionLocal
 import os, requests
 
 router = APIRouter()
@@ -15,7 +15,17 @@ def get_db():
         db.close()
 
 @router.post("/orders", response_model=schemas.OrderOut)
-def create_order(order_in: schemas.OrderCreate, token: str = Depends(auth_utils.oauth2_scheme), user: dict = Depends(auth_utils.get_current_user), db: Session = Depends(get_db)):
+def create_order(
+    order_in: schemas.OrderCreate, 
+    token: str = Depends(auth_utils.oauth2_scheme), 
+    user: dict = Depends(auth_utils.get_current_user), 
+    db: Session = Depends(get_db)
+    ):
+    # Only users (not artists) can place orders
+    if user.get("role") not in ("user", "admin"):
+        raise HTTPException(status_code=403, detail="Only users or admins can place orders")
+
+
     # Buyer pulled from token
     buyer = user.get("sub")
     # Check artwork exists and not sold (forward token)
@@ -33,7 +43,7 @@ def create_order(order_in: schemas.OrderCreate, token: str = Depends(auth_utils.
         raise HTTPException(status_code=400, detail="Failed to reserve artwork")
 
     # Create order in local DB
-    new_order = models.Order(art_id=order_in.art_id, buyer=buyer, status="confirmed")
+    new_order = models.Order(art_id=order_in.art_id, buyer=buyer, status="this is confirmed")
     db.add(new_order)
     db.commit()
     db.refresh(new_order)

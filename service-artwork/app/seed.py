@@ -1,6 +1,7 @@
 # run: docker compose run --rm artwork python app/seed.py
-from app.database import SessionLocal, engine
-from app import models
+from database import SessionLocal, engine
+import models
+
 
 models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
@@ -8,6 +9,8 @@ db = SessionLocal()
 sample = [
     {"title": "Sunset", "description": "Vivid sunset painting", "price": 100.0, "owner": "artist1"},
     {"title": "Cityscape", "description": "Night city", "price": 250.0, "owner": "artist1"},
+    {"title": "Cityscape1", "description": "cadity", "price": 200.0, "owner": "artist1"},
+    {"title": "Cityscape2", "description": "light gone", "price": 350.0, "owner": "artist1"}
 ]
 
 for s in sample:

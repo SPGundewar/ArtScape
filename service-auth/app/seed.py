@@ -1,6 +1,6 @@
 # run: docker compose run --rm auth python app/seed.py
-from app.database import SessionLocal, engine
-from app import models, utils, auth
+from database import SessionLocal, engine
+import models, utils, auth
 
 models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()

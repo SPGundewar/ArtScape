@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   auth:
     build: ./service-auth
@@ -7,12 +5,12 @@ services:
     ports:
       - "8001:8000"
     environment:
-      - DATABASE_URL=sqlite:///./auth.db
+      - DATABASE_URL=sqlite:///./data/auth.db
       - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
     volumes:
-      - ./service-auth:/app
-      - auth_db:/app
+      - ./service-auth/app:/app
+      - auth_db:/app/data
     networks:
       - artnet
 
@@ -22,11 +20,11 @@ services:
     ports:
       - "8002:8000"
     environment:
-      - DATABASE_URL=sqlite:///./artwork.db
+      - DATABASE_URL=sqlite:///./data/artwork.db
       - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
     volumes:
-      - ./service-artwork:/app
-      - artwork_db:/app
+      - ./service-artwork/app:/app
+      - artwork_db:/app/data
     networks:
       - artnet
 
@@ -36,13 +34,13 @@ services:
     ports:
       - "8003:8000"
     environment:
-      - DATABASE_URL=sqlite:///./orders.db
+      - DATABASE_URL=sqlite:///./data/orders.db
       - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
       - ARTWORK_SERVICE_URL=${ARTWORK_SERVICE_URL:-http://artwork:8000}
       - AUTH_SERVICE_URL=${AUTH_SERVICE_URL:-http://auth:8000}
     volumes:
-      - ./service-orders:/app
-      - orders_db:/app
+      - ./service-orders/app:/app
+      - orders_db:/app/data
     networks:
       - artnet
 
