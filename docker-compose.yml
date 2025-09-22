@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  auth:
+    build: ./service-auth
+    container_name: auth
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./auth.db
+      - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+    volumes:
+      - ./service-auth:/app
+      - auth_db:/app
+    networks:
+      - artnet
+
+  artwork:
+    build: ./service-artwork
+    container_name: artwork
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./artwork.db
+      - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
+    volumes:
+      - ./service-artwork:/app
+      - artwork_db:/app
+    networks:
+      - artnet
+
+  orders:
+    build: ./service-orders
+    container_name: orders
+    ports:
+      - "8003:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./orders.db
+      - SECRET_KEY=${SECRET_KEY:-supersecret_demo_key_change_me}
+      - ARTWORK_SERVICE_URL=${ARTWORK_SERVICE_URL:-http://artwork:8000}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL:-http://auth:8000}
+    volumes:
+      - ./service-orders:/app
+      - orders_db:/app
+    networks:
+      - artnet
+
+volumes:
+  auth_db:
+  artwork_db:
+  orders_db:
+
+networks:
+  artnet:
+    driver: bridge

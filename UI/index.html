@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ArtScape Demo UI</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; margin: 20px; max-width: 900px; }
+    input, button { padding: 8px; margin: 4px; }
+    .panel { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; border-radius:6px; }
+    .art { border-bottom:1px dashed #ccc; padding:8px 0; }
+  </style>
+</head>
+<body>
+  <h2>ArtScape — Minimal Demo UI</h2>
+
+  <div class="panel">
+    <h3>Auth</h3>
+    <div>
+      <input id="reg_user" placeholder="username" />
+      <input id="reg_pass" placeholder="password" type="password" />
+      <select id="reg_role">
+        <option value="user">user</option>
+        <option value="artist">artist</option>
+      </select>
+      <button onclick="register()">Register</button>
+    </div>
+    <div style="margin-top:8px;">
+      <input id="login_user" placeholder="username" />
+      <input id="login_pass" placeholder="password" type="password" />
+      <button onclick="login()">Login</button>
+      <span id="token_status"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Create Artwork (must be artist)</h3>
+    <input id="art_title" placeholder="title" />
+    <input id="art_desc" placeholder="description" />
+    <input id="art_price" placeholder="price" />
+    <button onclick="createArtwork()">Create</button>
+  </div>
+
+  <div class="panel">
+    <h3>Artworks</h3>
+    <button onclick="listArtworks()">Refresh</button>
+    <div id="art_list"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Purchase</h3>
+    <input id="buy_art_id" placeholder="art id" />
+    <button onclick="purchase()">Buy</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
