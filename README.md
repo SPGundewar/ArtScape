@@ -5,6 +5,24 @@ This demo showcases secure authentication, role-based authorization, and inter-s
 
 ---
 
+## 📑 Table of Contents
+
+* [🏗️ Architecture Overview](#️-architecture-overview)
+* [🚀 Quick Start](#-quick-start)
+
+  * [Option 1: Docker (Recommended)](#option-1-docker-recommended)
+  * [Option 2: Local Development](#option-2-local-development)
+* [📋 API Documentation](#-api-documentation)
+* [🧪 Demo Workflow](#-demo-workflow)
+* [📊 Database Schema](#-database-schema)
+* [🔒 Security Features](#-security-features)
+* [🎯 Assignment A2 Compliance](#-assignment-a2-compliance)
+* [📈 Scalability & Extensions](#-scalability--extensions)
+* [🏛️ Service Communication Flow](#️-service-communication-flow)
+* [🗄️ Database per Service Pattern](#️-database-per-service-pattern)
+
+---
+
 ## 🏗️ Architecture Overview
 
 * **🔐 Auth Service** (Port 8001)
