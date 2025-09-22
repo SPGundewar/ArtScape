@@ -157,10 +157,9 @@ curl http://localhost:8003/orders
 
 ---
 
-✨ ArtScape demonstrates a **clean microservices pattern** with minimal setup, while being extensible enough to evolve into a production-ready marketplace.
+## 🏛️ Service Communication Flow
 
----
-
+```mermaid
 flowchart LR
     Client[👩‍💻 Client/UI] -->|Login / Register| Auth[🔐 Auth Service]
     Client -->|Browse / Buy| Artwork[🖼️ Artwork Service]
@@ -168,8 +167,13 @@ flowchart LR
 
     Orders -->|Verify Artwork| Artwork
     Orders -->|Decode & Verify Token| Auth
+```
 
+---
 
+## 🗄️ Database per Service Pattern
+
+```mermaid
 flowchart TB
     subgraph AuthService[🔐 Auth Service]
         AuthDB[(auth.db)]
@@ -189,4 +193,12 @@ flowchart TB
 
     OrdersService --> ArtworkService
     OrdersService --> AuthService
+```
+
+---
+
+✨ ArtScape demonstrates a **clean microservices pattern** with minimal setup, while being extensible enough to evolve into a production-ready marketplace.
+
+---
+
 
