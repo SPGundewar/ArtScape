@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./auth.db
+      - SECRET_KEY=artscape-secret-key-change-in-production-make-it-very-long-and-secure-2024
+    volumes:
+      - ./auth-service:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  artwork-service:
+    build: ./artwork-service
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./artworks.db
+      - AUTH_SERVICE_URL=http://auth-service:8000
+    volumes:
+      - ./artwork-service:/app
+    depends_on:
+      - auth-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  commerce-service:
+    build: ./commerce-service
+    ports:
+      - "8003:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./commerce.db
+      - AUTH_SERVICE_URL=http://auth-service:8000
+      - ARTWORK_SERVICE_URL=http://artwork-service:8000
+    volumes:
+      - ./commerce-service:/app
+    depends_on:
+      - auth-service
+      - artwork-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8000
+      - ARTWORK_SERVICE_URL=http://artwork-service:8000
+      - COMMERCE_SERVICE_URL=http://commerce-service:8000
+    volumes:
+      - ./api-gateway:/app
+    depends_on:
+      - auth-service
+      - artwork-service
+      - commerce-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    name: artscape-network
