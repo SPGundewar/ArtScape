@@ -1,56 +1,185 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>ArtScape Demo UI</title>
+  <title>ArtScape — Marketplace Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: Inter, system-ui, sans-serif; margin: 20px; max-width: 900px; }
-    input, button { padding: 8px; margin: 4px; }
-    .panel { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; border-radius:6px; }
-    .art { border-bottom:1px dashed #ccc; padding:8px 0; }
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      background: #f7f8fa;
+      color: #333;
+      margin: 0;
+    }
+
+    header {
+      background: #4a69bd;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    header nav button {
+      background: #fff;
+      border: none;
+      color: #4a69bd;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    header nav button:hover {
+      background: #e1e7f5;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    section h2 {
+      margin-bottom: 1rem;
+      color: #273c75;
+    }
+
+    input, select, button {
+      padding: 0.6rem;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin: 0.3rem 0;
+    }
+
+    button {
+      background: #4a69bd;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #3b54a0;
+    }
+
+    .art-card {
+      border: 1px solid #eee;
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: box-shadow 0.2s;
+    }
+
+    .art-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .art-card h3 {
+      margin: 0 0 0.5rem;
+      color: #2f3640;
+    }
+
+    .status {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .status.available {
+      background: #e6f7ed;
+      color: #2e7d32;
+    }
+
+    .status.sold {
+      background: #fdecea;
+      color: #c62828;
+    }
   </style>
 </head>
 <body>
-  <h2>ArtScape — Minimal Demo UI</h2>
+  <header>
+    <h1>🎨 ArtScape Marketplace</h1>
+    <nav>
+      <button onclick="showLogin()">Login</button>
+      <button onclick="logout()" id="logoutBtn" style="display:none;">Logout</button>
+    </nav>
+  </header>
 
-  <div class="panel">
-    <h3>Auth</h3>
-    <div>
-      <input id="reg_user" placeholder="username" />
-      <input id="reg_pass" placeholder="password" type="password" />
-      <select id="reg_role">
-        <option value="user">user</option>
-        <option value="artist">artist</option>
-      </select>
-      <button onclick="register()">Register</button>
-    </div>
-    <div style="margin-top:8px;">
-      <input id="login_user" placeholder="username" />
-      <input id="login_pass" placeholder="password" type="password" />
-      <button onclick="login()">Login</button>
-      <span id="token_status"></span>
-    </div>
-  </div>
+  <main>
+    <!-- Auth Panel -->
+    <section id="authSection">
+      <h2>Authentication</h2>
+      <div>
+        <h3>Register</h3>
+        <input id="reg_user" placeholder="Username" />
+        <input id="reg_pass" placeholder="Password" type="password" />
+        <select id="reg_role">
+          <option value="user">User</option>
+          <option value="artist">Artist</option>
+        </select>
+        <button onclick="register()">Register</button>
+      </div>
+      <div style="margin-top:1rem;">
+        <h3>Login</h3>
+        <input id="login_user" placeholder="Username" />
+        <input id="login_pass" placeholder="Password" type="password" />
+        <button onclick="login()">Login</button>
+        <span id="token_status"></span>
+      </div>
+    </section>
 
-  <div class="panel">
-    <h3>Create Artwork (must be artist)</h3>
-    <input id="art_title" placeholder="title" />
-    <input id="art_desc" placeholder="description" />
-    <input id="art_price" placeholder="price" />
-    <button onclick="createArtwork()">Create</button>
-  </div>
+    <!-- Create Artwork -->
+    <section id="artistSection" style="display:none;">
+      <h2>Create Artwork</h2>
+      <input id="art_title" placeholder="Title" />
+      <input id="art_desc" placeholder="Description" />
+      <input id="art_price" placeholder="Price" type="number" step="0.01" />
+      <button onclick="createArtwork()">Create</button>
+    </section>
 
-  <div class="panel">
-    <h3>Artworks</h3>
-    <button onclick="listArtworks()">Refresh</button>
-    <div id="art_list"></div>
-  </div>
+    <!-- Artworks List -->
+    <section>
+      <h2>Browse Artworks</h2>
+      <button onclick="listArtworks()">Refresh</button>
+      <div id="art_list"></div>
+    </section>
 
-  <div class="panel">
-    <h3>Purchase</h3>
-    <input id="buy_art_id" placeholder="art id" />
-    <button onclick="purchase()">Buy</button>
-  </div>
+    <!-- Purchase -->
+    <section id="purchaseSection" style="display:none;">
+      <h2>Purchase Artwork</h2>
+      <input id="buy_art_id" placeholder="Artwork ID" />
+      <button onclick="purchase()">Buy</button>
+    </section>
+    <!-- Orders History -->
+    <section id="ordersSection" style="display:none;">
+      <h2>My Orders</h2>
+      <button onclick="listOrders()">Refresh</button>
+      <div id="ordersList"></div>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>

@@ -43,7 +43,7 @@ def create_order(
         raise HTTPException(status_code=400, detail="Failed to reserve artwork")
 
     # Create order in local DB
-    new_order = models.Order(art_id=order_in.art_id, buyer=buyer, status="this is confirmed")
+    new_order = models.Order(art_id=order_in.art_id, buyer=buyer, status="confirmed")
     db.add(new_order)
     db.commit()
     db.refresh(new_order)
@@ -56,6 +56,27 @@ def get_order(order_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Order not found")
     return o
 
-@router.get("/orders")
-def list_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(models.Order).offset(skip).limit(limit).all()
+@router.get("/orders", response_model=list[schemas.OrderOut])
+def list_orders(
+    token: str = Depends(auth_utils.oauth2_scheme),
+    user: dict = Depends(auth_utils.get_current_user),
+    db: Session = Depends(get_db)
+):
+    role = user.get("role")
+    username = user.get("sub")
+
+    query = db.query(models.Order)
+
+    if role == "user":
+        # users see only their own orders
+        query = query.filter(models.Order.buyer == username)
+    elif role == "artist":
+        # artists see only orders for their artworks
+        # need to join with artwork table
+        query = query.join(models.Artwork).filter(models.Artwork.owner == username)
+    elif role == "admin":
+        # admins see everything
+        pass
+
+    return query.all()
+
