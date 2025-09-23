@@ -6,10 +6,14 @@ models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
 users = [
-    {"username": "artist1", "password": "pass", "role": "artist"},
-    {"username": "user1", "password": "pass", "role": "user"},
+    {"username": "vincent_van_gogh", "password": "pass", "role": "artist"},
+    {"username": "frida_kahlo", "password": "pass", "role": "artist"},
+    {"username": "pablo_picasso", "password": "pass", "role": "artist"},
+    {"username": "sarah_johnson", "password": "pass", "role": "user"},
+    {"username": "michael_lee", "password": "pass", "role": "user"},
     {"username": "admin", "password": "pass", "role": "admin"},
 ]
+
 
 for u in users:
     existing = db.query(models.User).filter(models.User.username == u["username"]).first()
