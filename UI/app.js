@@ -112,6 +112,7 @@ async function createArtwork() {
   const desc = document.getElementById("art_desc").value.trim();
   const price = parseFloat(document.getElementById("art_price").value || 0);
 
+  // In future, you can also include an image_url field here
   const res = await fetch(`${ARTWORK_URL}/artworks`, {
     method: "POST",
     headers: authHeaders(),
@@ -137,18 +138,21 @@ async function listArtworks() {
     const card = document.createElement("div");
     card.className = "art-card";
     card.innerHTML = `
-      <h3>${a.title}</h3>
-      <p>${a.description || "No description"}</p>
-      <p><b>Owner:</b> ${a.owner}</p>
-      <p><b>Price:</b> $${a.price}</p>
-      <span class="status ${a.is_sold ? "sold" : "available"}">
-        ${a.is_sold ? "❌ Sold" : "✅ Available"}
-      </span>
-      ${
-        !a.is_sold && getToken()
-          ? `<button onclick="buyArtwork(${a.id})">Buy</button>`
-          : ""
-      }
+      <div class="art-info">
+        <h3>${a.title}</h3>
+        <p>${a.description || "No description"}</p>
+        <p><b>Owner:</b> ${a.owner}</p>
+        <p><b>Price:</b> $${a.price}</p>
+        <span class="status ${a.is_sold ? "sold" : "available"}">
+          ${a.is_sold ? "❌ Sold" : "✅ Available"}
+        </span>
+        ${
+          !a.is_sold && getToken()
+            ? `<br><button onclick="buyArtwork(${a.id})">Buy</button>`
+            : ""
+        }
+      </div>
+      <img src="${a.image_url || "https://via.placeholder.com/120"}" alt="Artwork preview" />
     `;
     el.appendChild(card);
   });
