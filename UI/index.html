@@ -133,13 +133,19 @@
       background: #fdecea;
       color: #c62828;
     }
+
+    /* Scrollable container for artworks */
+    #art_list {
+      max-height: 600px;   /* enough space for ~8 cards */
+      overflow-y: auto;
+      padding-right: 0.5rem; /* avoid scrollbar overlap */
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>🎨 ArtScape Marketplace</h1>
     <nav>
-      <!-- Removed static Login button -->
       <button onclick="logout()" id="logoutBtn" style="display:none;">Logout</button>
     </nav>
   </header>
