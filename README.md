@@ -158,11 +158,11 @@ curl http://localhost:8003/orders
 
 ## 🎯 Assignment A2 Compliance
 
-✅ **Three+ Microservices** implemented
-✅ **Inter-service Communication** via HTTP APIs
-✅ **Role-based Access Control** (artist, user, admin)
-✅ **Swagger UI** for each service (TA demo-ready)
-✅ **Dockerized** for simple startup and reproducibility
+* **Three+ Microservices** implemented
+* **Inter-service Communication** via HTTP APIs
+* **Role-based Access Control** (artist, user, admin)
+* **Swagger UI** for each service (TA demo-ready)
+* **Dockerized** for simple startup and reproducibility
 
 ---
 
