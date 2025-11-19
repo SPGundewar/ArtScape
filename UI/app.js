@@ -20,7 +20,9 @@ function getToken() {
 
 function authHeaders() {
   const t = getToken();
-  return t ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" } : {};
+  return t
+    ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" }
+    : {};
 }
 
 // --- Auth ---
@@ -110,7 +112,9 @@ async function refreshUser() {
 async function createArtwork() {
   const title = document.getElementById("art_title").value.trim();
   const desc = document.getElementById("art_desc").value.trim();
-  const price = Number.parseFloat(document.getElementById("art_price").value || 0);
+  const price = Number.parseFloat(
+    document.getElementById("art_price").value || 0
+  );
 
   // In future, you can also include an image_url field here
   const res = await fetch(`${ARTWORK_URL}/artworks`, {
@@ -177,7 +181,10 @@ async function buyArtwork(artId) {
 }
 
 async function purchase() {
-  const artId = Number.parseInt(document.getElementById("buy_art_id").value);
+  const artId = Number.parseInt(
+    document.getElementById("buy_art_id").value,
+    10
+  );
   await buyArtwork(artId);
 }
 
@@ -219,10 +226,8 @@ document.getElementById("token_status").innerText = getToken()
   ? "✅ Authenticated"
   : "❌ Not authenticated";
 
-async function initApp() {
-  await refreshUser();
-  listArtworks();
-  if (getToken()) listOrders();
+await refreshUser();
+listArtworks();
+if (getToken()) {
+  listOrders();
 }
-
-initApp();
