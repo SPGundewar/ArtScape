@@ -110,7 +110,7 @@ async function refreshUser() {
 async function createArtwork() {
   const title = document.getElementById("art_title").value.trim();
   const desc = document.getElementById("art_desc").value.trim();
-  const price = parseFloat(document.getElementById("art_price").value || 0);
+  const price = Number.parseFloat(document.getElementById("art_price").value || 0);
 
   // In future, you can also include an image_url field here
   const res = await fetch(`${ARTWORK_URL}/artworks`, {
@@ -177,7 +177,7 @@ async function buyArtwork(artId) {
 }
 
 async function purchase() {
-  const artId = parseInt(document.getElementById("buy_art_id").value);
+  const artId = Number.parseInt(document.getElementById("buy_art_id").value);
   await buyArtwork(artId);
 }
 
@@ -219,8 +219,10 @@ document.getElementById("token_status").innerText = getToken()
   ? "✅ Authenticated"
   : "❌ Not authenticated";
 
-(async () => {
+async function initApp() {
   await refreshUser();
   listArtworks();
   if (getToken()) listOrders();
-})();
+}
+
+initApp();
